@@ -1,0 +1,192 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --text: #172033;
+  --muted: #667085;
+  --line: #d8dee9;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+  --marker: #ef4444;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px 10px;
+  background: linear-gradient(180deg, #ffffff, #f6f8fb);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+h1 { font-size: 18px; margin: 0; }
+p { margin: 0; }
+.app-header p { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+}
+.badge.recording { background: #dcfce7; color: #166534; }
+
+.panel-card, .toolbar, .step-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 12px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+}
+
+.label {
+  display: block;
+  margin: 8px 0 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #344054;
+}
+
+.input, textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  font: inherit;
+  background: #fff;
+  color: var(--text);
+}
+textarea { resize: vertical; }
+
+.button-row, .toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.button-row { margin-top: 10px; }
+.toolbar { position: sticky; top: 62px; z-index: 4; }
+
+button, .import-label {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+button:hover, .import-label:hover { background: #f9fafb; }
+button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+button.primary:hover { background: var(--primary-dark); }
+button.danger { color: var(--danger); border-color: #fecaca; background: #fff; }
+button.recording { background: #16a34a; border-color: #16a34a; color: #fff; }
+.import-label input { display: none; }
+
+.hint { color: var(--muted); font-size: 12px; margin-top: 10px; line-height: 1.5; }
+
+.steps-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 12px 4px;
+  color: #344054;
+  font-size: 13px;
+}
+.step-count {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #475467;
+  font-size: 12px;
+}
+.latest-note {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.steps { padding-bottom: 24px; }
+.step-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.step-no { font-size: 15px; }
+.step-actions { display: flex; gap: 6px; }
+.step-actions button { padding: 5px 8px; font-size: 12px; }
+
+.capture-wrap {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eef2f7;
+}
+.capture {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.marker {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--marker);
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 2px rgba(255,255,255,.9), 0 1px 4px rgba(17,24,39,.35);
+  pointer-events: none;
+}
+.marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--marker);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+details { margin-top: 8px; color: var(--muted); font-size: 12px; }
+.page-info { word-break: break-all; line-height: 1.5; margin-top: 6px; }
+.toast {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  background: #111827;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  box-shadow: 0 10px 20px rgba(0,0,0,.2);
+  z-index: 99;
+}
+.empty {
+  margin: 24px 12px;
+  padding: 20px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+  background: #fff;
+}
+
+select.input{appearance:auto}.step-actions{flex-wrap:wrap}.step-actions button[data-action="edit"]{color:#1d4ed8;border-color:#bfdbfe;background:#eff6ff}.toolbar button{font-size:12px;padding:7px 8px}
