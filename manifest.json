@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Manual Clip - 手順メモ",
+  "version": "0.1.2",
+  "description": "クリック操作を記録し、画面キャプチャとメモを蓄積して手順書素材を作成します。ローカル保存のみ。",
+  "permissions": ["storage", "tabs", "activeTab", "sidePanel", "clipboardWrite", "unlimitedStorage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {"service_worker": "background.js"},
+  "content_scripts": [{"matches": ["<all_urls>"], "js": ["content.js"], "run_at": "document_idle"}],
+  "side_panel": {"default_path": "sidepanel.html"},
+  "action": {"default_title": "Manual Clip を開く"}
+}
