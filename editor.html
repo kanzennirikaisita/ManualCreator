@@ -1,0 +1,5 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Manual Clip 画像編集</title><link rel="stylesheet" href="editor.css"></head><body>
+<header><div><h1>画像を編集</h1><p>ドラッグして注釈を追加します。保存すると編集結果を手順へ反映します。</p></div><div class="header-actions"><button id="undo">元に戻す</button><button id="reset">編集をリセット</button><button id="save" class="primary">保存して閉じる</button></div></header>
+<nav><button data-tool="rect" class="active">赤枠</button><button data-tool="arrow">矢印</button><button data-tool="mosaic">モザイク</button><button data-tool="crop">切り抜き範囲</button><button id="applyCrop">切り抜きを適用</button></nav>
+<main><div class="help" id="help">赤枠：強調したい範囲をドラッグしてください。</div><div id="stage"><canvas id="canvas"></canvas></div></main>
+<div id="toast" hidden></div><script src="editor.js"></script></body></html>
