@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Manual Clip - 手順メモ",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "クリック操作を記録し、画面キャプチャとメモを蓄積して手順書素材を作成します。ローカル保存のみ。",
   "permissions": ["storage", "tabs", "activeTab", "sidePanel", "clipboardWrite", "unlimitedStorage"],
   "host_permissions": ["<all_urls>"],
