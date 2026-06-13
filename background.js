@@ -1,0 +1,21 @@
+const DEFAULT_STATE = { recording: false, title: '', template: 'standard', steps: [], lastClickAt: 0 };
+async function getState() { const data = await chrome.storage.local.get('manualClipState'); return { ...DEFAULT_STATE, ...(data.manualClipState || {}) }; }
+async function setState(nextState) { await chrome.storage.local.set({ manualClipState: nextState }); }
+function notifyStateChanged() { chrome.runtime.sendMessage({ type: 'manualclip_state_changed' }).catch(() => {}); }
+chrome.runtime.onInstalled.addListener(async () => { const data = await chrome.storage.local.get('manualClipState'); if (!data.manualClipState) await setState(DEFAULT_STATE); if (chrome.sidePanel?.setPanelBehavior) await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {}); });
+chrome.action.onClicked.addListener(async tab => { if (chrome.sidePanel?.open && tab.windowId) await chrome.sidePanel.open({ windowId: tab.windowId }).catch(() => {}); });
+function buildDefaultMemo(click) { const element = click?.element || {}; const text = (element.text || '').slice(0, 48); const aria = (element.ariaLabel || '').slice(0, 48); if (text) return `「${text}」をクリックします。`; if (aria) return `「${aria}」をクリックします。`; if (element.tagName) return `${element.tagName.toLowerCase()}要素をクリックします。`; return '画面上の対象箇所をクリックします。'; }
+async function appendCapture(tab, click = null) { if (!tab?.windowId) throw new Error('対象タブを取得できませんでした。'); const image = await chrome.tabs.captureVisibleTab(tab.windowId, { format: 'png' }); const state = await getState(); state.steps.push({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, createdAt: new Date().toISOString(), pageTitle: tab.title || '', url: tab.url || '', image, click, memo: click ? buildDefaultMemo(click) : '画面を確認します。', note: '' }); await setState(state); notifyStateChanged(); }
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => { (async () => { const state = await getState(); switch (message?.type) {
+  case 'manualclip_get_state': sendResponse({ ok: true, state }); break;
+  case 'manualclip_set_recording': state.recording = Boolean(message.recording); await setState(state); notifyStateChanged(); sendResponse({ ok: true }); break;
+  case 'manualclip_set_title': state.title = String(message.title || ''); await setState(state); sendResponse({ ok: true }); break;
+  case 'manualclip_set_template': state.template = ['standard','compact','detailed'].includes(message.template) ? message.template : 'standard'; await setState(state); notifyStateChanged(); sendResponse({ ok: true }); break;
+  case 'manualclip_update_steps': state.steps = Array.isArray(message.steps) ? message.steps : state.steps; await setState(state); notifyStateChanged(); sendResponse({ ok: true }); break;
+  case 'manualclip_update_step_image': { const step = state.steps.find(s => s.id === message.id); if (!step) throw new Error('対象の手順が見つかりません。'); step.image = String(message.image || step.image); step.click = message.clearClick ? null : step.click; await setState(state); notifyStateChanged(); sendResponse({ ok: true }); break; }
+  case 'manualclip_clear': await setState({ ...DEFAULT_STATE, recording: state.recording }); notifyStateChanged(); sendResponse({ ok: true }); break;
+  case 'manualclip_import_state': await setState({ ...DEFAULT_STATE, title: String(message.state?.title || ''), template: ['standard','compact','detailed'].includes(message.state?.template) ? message.state.template : 'standard', steps: Array.isArray(message.state?.steps) ? message.state.steps : [] }); notifyStateChanged(); sendResponse({ ok: true }); break;
+  case 'manualclip_manual_capture': { const [tab] = await chrome.tabs.query({ active: true, currentWindow: true }); if (!tab) throw new Error('アクティブなタブが見つかりません。'); await appendCapture(tab); sendResponse({ ok: true }); break; }
+  case 'manualclip_click': if (!state.recording) return sendResponse({ ok: true, skipped: true }); if (Date.now() - (state.lastClickAt || 0) < 700) return sendResponse({ ok: true, skipped: true }); state.lastClickAt = Date.now(); await setState(state); setTimeout(() => appendCapture(sender.tab, message.click).catch(console.warn), 450); sendResponse({ ok: true }); break;
+  default: sendResponse({ ok: false, error: '未対応の操作です。' });
+} })().catch(error => sendResponse({ ok: false, error: error.message })); return true; });
