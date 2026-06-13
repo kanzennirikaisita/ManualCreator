@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manual Clip</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Manual Clip</h1>
+      <p>手順書素材をローカルに蓄積</p>
+    </div>
+    <span id="statusBadge" class="badge">停止中</span>
+  </header>
+
+  <section class="panel-card">
+    <label class="label" for="manualTitle">手順書タイトル</label>
+    <input id="manualTitle" class="input" type="text" placeholder="例：アカウント設定を変更する方法">
+    <label class="label" for="templateSelect">出力テンプレート</label>
+    <select id="templateSelect" class="input">
+      <option value="standard">標準：画像と説明をバランスよく表示</option>
+      <option value="compact">コンパクト：画像を小さめに一覧表示</option>
+      <option value="detailed">詳細：補足・ページ情報も大きく表示</option>
+    </select>
+    <div class="button-row">
+      <button id="toggleRecording" class="primary">記録開始</button>
+      <button id="manualCapture">現在画面を追加</button>
+    </div>
+    <p class="hint">記録中は、ページ内をクリックするたびにキャプチャを追加します。公開したくない情報が写った場合は、各手順の「画像を編集」からモザイクを付けてください。</p>
+  </section>
+
+  <section class="toolbar">
+    <button id="copyWord">Word向けコピー</button>
+    <button id="copyExcel">Excel向けコピー</button>
+    <button id="downloadExcel">Excel表保存</button>
+    <button id="downloadHtml">HTML保存</button>
+    <button id="copyMarkdown">Markdownコピー</button>
+    <button id="downloadMarkdown">Markdown保存</button>
+    <button id="exportJson">JSON保存</button>
+    <label class="import-label">JSON読込<input id="importJson" type="file" accept="application/json"></label>
+    <button id="clearAll" class="danger">全消去</button>
+  </section>
+
+  <section class="steps-heading"><strong>記録した手順</strong><span id="stepCount" class="step-count">0件</span><span class="latest-note">新しい手順が上に追加されます</span></section>
+
+  <main id="steps" class="steps"></main>
+
+  <template id="stepTemplate">
+    <article class="step-card">
+      <div class="step-head">
+        <strong class="step-no"></strong>
+        <div class="step-actions">
+          <button data-action="edit">画像を編集</button>
+          <button data-action="up" title="この手順を一覧の上へ移動">↑</button>
+          <button data-action="down" title="この手順を一覧の下へ移動">↓</button>
+          <button data-action="delete" class="danger">削除</button>
+        </div>
+      </div>
+      <div class="capture-wrap">
+        <img class="capture" alt="手順キャプチャ">
+        <span class="marker"></span>
+      </div>
+      <label class="label">操作説明</label>
+      <textarea class="memo" rows="2"></textarea>
+      <label class="label">補足・注意事項</label>
+      <textarea class="note" rows="2" placeholder="任意：入力例、注意点、例外処理など"></textarea>
+      <details>
+        <summary>ページ情報</summary>
+        <div class="page-info"></div>
+      </details>
+    </article>
+  </template>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
